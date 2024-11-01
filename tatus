@@ -1,0 +1,55 @@
+[1mdiff --git a/db.sqlite3 b/db.sqlite3[m
+[1mindex e8f61b6..ed5ed20 100644[m
+Binary files a/db.sqlite3 and b/db.sqlite3 differ
+[1mdiff --git a/posts/views.py b/posts/views.py[m
+[1mindex cd49585..22a36d4 100644[m
+[1m--- a/posts/views.py[m
+[1m+++ b/posts/views.py[m
+[36m@@ -1,7 +1,8 @@[m
+ from django.shortcuts import render[m
+[31m-from django.http import HttpResponse[m
+[32m+[m[32mfrom django.http import HttpResponse, HttpResponseRedirect[m
+ [m
+ from posts.models import Post, Comment[m
+[32m+[m[32mfrom .forms import PostForm[m
+ [m
+ [m
+ def index(request):[m
+[36m@@ -22,4 +23,16 @@[m [mdef post_detail(request, post_id):[m
+     post = Post.objects.get(pk=post_id)[m
+     comment = Comment.objects.filter(post=post)[m
+     context = {'post': post, 'comment': comment}[m
+[31m-    return render(request, 'posts/post_detail.html', context=context)[m
+\ No newline at end of file[m
+[32m+[m[32m    return render(request, 'posts/post_detail.html', context=context)[m
+[32m+[m
+[32m+[m
+[32m+[m[32mdef post_create(request):[m
+[32m+[m[32m    if request.method == "POST":[m
+[32m+[m[32m        form = PostForm(request.POST)[m
+[32m+[m[32m        if form.is_valid():[m
+[32m+[m[32m            Post.objects.create(**form.cleaned_data)[m
+[32m+[m[32m            return HttpResponseRedirect('/posts/')[m
+[32m+[m[32m    else:[m
+[32m+[m[32m        form = PostForm()[m
+[32m+[m
+[32m+[m[32m    return render(request, 'posts/post_create.html', {'form': form})[m
+[1mdiff --git a/weblog/urls.py b/weblog/urls.py[m
+[1mindex 6d064d3..aa6b248 100644[m
+[1m--- a/weblog/urls.py[m
+[1m+++ b/weblog/urls.py[m
+[36m@@ -16,7 +16,7 @@[m [mIncluding another URLconf[m
+ """[m
+ from django.contrib import admin[m
+ from django.urls import path[m
+[31m-from posts.views import index, home, post_list, post_detail[m
+[32m+[m[32mfrom posts.views import index, home, post_list, post_detail, post_create[m
+ [m
+ urlpatterns = {[m
+     path('admin/', admin.site.urls),[m
+[36m@@ -24,4 +24,5 @@[m [murlpatterns = {[m
+     path('home/', home),[m
+     path('posts/', post_list, name='post-list'),[m
+     path('posts/<int:post_id>/', post_detail, name='post-detail'),[m
+[32m+[m[32m    path('posts/create/', post_create)[m
+ }[m

@@ -34,6 +34,11 @@ def post_detail(request, post_id):
 class PostDetail(generic.DetailView):
     model = Post
     template_name = 'posts/post_detail.html'
+
+    def get_context_data(self, **kwargs):
+        context = super(PostDetail, self).get_context_data()
+        context['comments'] = Comment.objects.filter(post=kwargs['object'].pk)
+
 def post_create(request):
     if request.method == "POST":
         form = PostForm(request.POST)

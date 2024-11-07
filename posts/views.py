@@ -8,10 +8,11 @@ from posts.models import Post, Comment
 from .forms import PostForm
 
 
-@api_view(["GET"])
+@api_view(["GET", "POST"])
 def index(request):
+    print(request.data)
     # return HttpResponse('<h1>Welcome to my weblog!</h1>')
-    return Response({'hello'})
+    return Response(dict(request.data))
 
 
 def home(request):

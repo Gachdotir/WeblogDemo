@@ -5,7 +5,6 @@ from rest_framework import status
 from .models import Post
 from .serializers import PostSerializer
 
-
 class PostListView(APIView):
 
     def get(self, request):
